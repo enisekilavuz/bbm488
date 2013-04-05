@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html dir="ltr" xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>Search Tweets</title>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<meta content="tr" http-equiv="Content-Language">
+	<link href="Style1.css" rel="stylesheet" type="text/css" />
+	</head>
+<body style="background-color: #73CEFB">
+    <div class="center" style="padding: 20px; height: 47px; width: 61%;">
+        <br />
+		<br />
+        <input id="search" type="text" value=" " />
+        <input id="button" type="button" value="Search!" />
+    </div>
+    <div class="auto-style1" id="tweets" style="padding: 20px; height: 39px; width: 588px;" >
+        No tweets..</div>
+    </body>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+<script type="text/javascript">
+function searchTweets(query) {
+    $.ajax({
+        url: 'http://search.twitter.com/search.json?' + jQuery.param(query),
+        dataType: 'jsonp',
+        success: function(data) {
+            var tweets = $('#tweets');
+            tweets.html('');
+            for (i in data['results']) {
+                tweets.append('<div>' + '<img src="' + data['results'][i]['profile_image_url'] + '" widt="48" height="48" align="left"/>' +'<b>' + data['results'][i]['from_user_name'] + '</b> @ <i>'  + data['results'][i]['from_user'] +' (' + data['results'][i]['created_at'] + '</i> ) <br>' + data['results'][i]['text'] + '</div><br />');
+            }
+        }
+    });
+}
+
+$(document).ready(function() {
+    $('#button').click(function() {
+    	
+        params = {
+            q: $('#search').val(),
+            rpp: 5
+        };
+        searchTweets(params);
+    	setInterval( function()
+    	{ searchTweets(params);
+       },10000);
+    });  
+});
+
+</script>
+</html>
